@@ -1,4 +1,4 @@
-import { Grid, MuiThemeProvider, Button } from '@material-ui/core';
+import { Grid, MuiThemeProvider } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -20,7 +20,7 @@ for (let i = 0; i < 1; i++) {
     id: i + 1,
     name: 'Name' + i,
     surname: 'Surname' + Math.round(i / 10),
-    isMarried: i % 2 ? true : false,
+    isMarried: !!(i % 2),
     birthDate: new Date(1987, 1, 1),
     birthCity: 0,
     sex: i % 2 ? 'Male' : 'Female',
@@ -34,8 +34,6 @@ for (let i = 0; i < 1; i++) {
 class App extends Component {
   tableRef = React.createRef();
 
-  colRenderCount = 0;
-
   state = {
     text: 'text',
     selecteds: 0,
@@ -48,7 +46,6 @@ class App extends Component {
       { id: 6, name: 'A6', surname: 'C', isMarried: true, birthDate: new Date(1989, 1, 1), birthCity: 34, sex: 'Female', type: 'child', insertDateTime: new Date(2018, 1, 1, 12, 23, 44), time: new Date(1900, 1, 1, 14, 23, 35), parentId: 5 },
     ],
     columns: [
-      { title: 'Adı', field: 'name', filterPlaceholder: 'Adı filter', tooltip: 'This is tooltip text' },
       { width: 200, title: 'Soyadı', field: 'surname', initialEditValue: 'test', tooltip: 'This is tooltip text' },
       { title: 'Evli', field: 'isMarried' },
       { title: 'Cinsiyet', field: 'sex', disableClick: true, editable: 'onAdd' },
@@ -60,7 +57,7 @@ class App extends Component {
       { title: 'Adı', field: 'name', filterPlaceholder: 'Adı filter', tooltip: 'This is tooltip text' },
     ],
     remoteColumns: [
-      { title: 'Avatar', field: 'avatar', render: rowData => <img style={{ height: 36, borderRadius: '50%' }} src={rowData.avatar} />, tooltip: 'delakjdslkjdaskljklsdaj' },
+      { title: 'Avatar', field: 'avatar', render: rowData => <img style={{ height: 36, borderRadius: '50%' }} src={rowData.avatar} alt="avatar" />, tooltip: 'delakjdslkjdaskljklsdaj' },
       { title: 'Id', field: 'id' },
       { title: 'First Name', field: 'first_name', defaultFilter: 'De' },
       { title: 'Last Name', field: 'last_name' },
@@ -88,6 +85,13 @@ class App extends Component {
                     },
                     tableLayout: 'fixed'
                   }}
+                  editable={{
+                    // isEditable: rowData => rowData.not_editable === true, // only name(a) rows would be editable
+                    // isDeletable: rowData => rowData.not_deletable === true, // only name(a) rows would be deletable
+                    onRowAdd: async newData => console.table(newData),
+                    onRowUpdate: async (newData, oldData) => console.table({newData, oldData}),
+                    onRowDelete: oldData => console.table(oldData)
+                  }}
                 />
               </Grid>
             </Grid>
@@ -107,6 +111,7 @@ class App extends Component {
                     <img
                       style={{ height: 36, borderRadius: '50%' }}
                       src={rowData.avatar}
+                      alt="avatar"
                     />
                   ),
                 },
@@ -119,7 +124,7 @@ class App extends Component {
                 grouping: true,
                 groupTitle: group => group.data.length,
               }}
-              data={query => new Promise((resolve, reject) => {
+              data={query => new Promise((resolve, _reject) => {
                 let url = 'https://reqres.in/api/users?'
                 url += 'per_page=' + query.pageSize
                 url += '&page=' + (query.page + 1)

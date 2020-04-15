@@ -31,8 +31,8 @@ export interface MaterialTableProps<RowData extends object> {
   onRowSelected?: (rowData: RowData) => void;
   onSearchChange?: (searchText: string) => void;
  /** An event fired when the table has finished filtering data
-  * @param {Filter<RowData>[]} filters All the filters that are applied to the table 
-  */ 
+  * @param {Filter<RowData>[]} filters All the filters that are applied to the table
+  */
   onFilterChange?: (filters: Filter<RowData>[]) => void;
   onSelectionChange?: (data: RowData[], rowData?: RowData) => void;
   onTreeExpandChange?: (data: any, isExpanded: boolean) => void;
@@ -291,3 +291,5 @@ export interface Localization {
 }
 
 export default class MaterialTable<RowData extends object> extends React.Component<MaterialTableProps<RowData>> {}
+
+export function rxMtUpdateField (props: { name: string, value: string })

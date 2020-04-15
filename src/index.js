@@ -29,3 +29,4 @@ const styles = theme => ({
 
 export default withStyles(styles, { withTheme: true })(props => <MaterialTable {...props} ref={props.tableRef} />);
 export * from './components';
+export * from './utils/database';

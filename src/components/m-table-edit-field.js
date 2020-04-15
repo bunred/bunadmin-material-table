@@ -6,6 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, TimePicker, DatePicker, DateTimePicker } from '@material-ui/pickers';
 import PropTypes from 'prop-types';
+import rxMtUpdateField from "../utils/database/rxMtUpdateField"
 
 class MTableEditField extends React.Component {
   getProps() {
@@ -18,7 +19,13 @@ class MTableEditField extends React.Component {
       <Select
         {...this.getProps()}
         value={this.props.value === undefined ? '' : this.props.value}
-        onChange={event => this.props.onChange(event.target.value)}
+        onChange={event => {
+            this.props.onChange(event.target.value)
+            rxMtUpdateField({
+                name: this.props.columnDef.field,
+                value: event.target.value
+            }).then()
+        }}
         style={{
           fontSize: 13,
         }}
@@ -37,7 +44,13 @@ class MTableEditField extends React.Component {
         {...this.getProps()}
         value={String(this.props.value)}
         checked={Boolean(this.props.value)}
-        onChange={event => this.props.onChange(event.target.checked)}
+        onChange={event => {
+            this.props.onChange(event.target.checked)
+            rxMtUpdateField({
+                name: this.props.columnDef.field,
+                value: event.target.checked
+            }).then()
+        }}
         style={{
           paddingLeft: 0,
           paddingTop: 0,
@@ -55,7 +68,13 @@ class MTableEditField extends React.Component {
           {...this.getProps()}
           format="dd.MM.yyyy"
           value={this.props.value || null}
-          onChange={this.props.onChange}
+          onChange={value => {
+              this.props.onChange(value)
+              rxMtUpdateField({
+                  name: this.props.columnDef.field,
+                  value
+              }).then()
+          }}
           clearable
           InputProps={{
             style: {
@@ -75,7 +94,13 @@ class MTableEditField extends React.Component {
           {...this.getProps()}
           format="HH:mm:ss"
           value={this.props.value || null}
-          onChange={this.props.onChange}
+          onChange={value => {
+              this.props.onChange(value)
+              rxMtUpdateField({
+                  name: this.props.columnDef.field,
+                  value
+              }).then()
+          }}
           clearable
           InputProps={{
             style: {
@@ -95,7 +120,13 @@ class MTableEditField extends React.Component {
           {...this.getProps()}
           format="dd.MM.yyyy HH:mm:ss"
           value={this.props.value || null}
-          onChange={this.props.onChange}
+          onChange={value => {
+              this.props.onChange(value)
+              rxMtUpdateField({
+                  name: this.props.columnDef.field,
+                  value
+              }).then()
+          }}
           clearable
           InputProps={{
             style: {
@@ -115,7 +146,13 @@ class MTableEditField extends React.Component {
         type={this.props.columnDef.type === 'numeric' ? 'number' : 'text'}
         placeholder={this.props.columnDef.title}
         value={this.props.value === undefined ? '' : this.props.value}
-        onChange={event => this.props.onChange(event.target.value)}
+        onChange={event => {
+            this.props.onChange(event.target.value)
+            rxMtUpdateField({
+                name: this.props.columnDef.field,
+                value: event.target.value
+            }).then()
+        }}
         InputProps={{
           style: {
             fontSize: 13,
@@ -131,7 +168,13 @@ class MTableEditField extends React.Component {
         {...this.getProps()}
         placeholder={this.props.columnDef.title}
         value={this.props.value === undefined ? '' : this.props.value}
-        onChange={event => this.props.onChange(event.target.value)}
+        onChange={event => {
+            this.props.onChange(event.target.value)
+            rxMtUpdateField({
+                name: this.props.columnDef.field,
+                value: event.target.value
+            }).then()
+        }}
         inputProps={{
           style: {
             fontSize: 13,
@@ -143,7 +186,7 @@ class MTableEditField extends React.Component {
   }
 
   render() {
-    let component = "ok";
+    let component;
 
     if (this.props.columnDef.lookup) {
       component = this.renderLookupField();

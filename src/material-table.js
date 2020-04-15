@@ -12,6 +12,8 @@ import { debounce } from 'debounce';
 import equal from 'fast-deep-equal';
 import { withStyles } from '@material-ui/core';
 import * as CommonValues from './utils/common-values';
+import rxDb from './utils/database/rxConnect';
+import {rxMtSetting, rxMtSettings} from "./utils/database/rxCollections"
 
 /* eslint-enable no-unused-vars */
 
@@ -51,8 +53,11 @@ export default class MaterialTable extends React.Component {
     this.tableContainerDiv = React.createRef();
   }
 
-  componentDidMount() {
-    this.setState({ ...this.dataManager.getRenderState(), width: this.tableContainerDiv.current.scrollWidth }, () => {
+  async componentDidMount() {
+    // init database
+    await rxDb()
+
+    this.setState({...this.dataManager.getRenderState(), width: this.tableContainerDiv.current.scrollWidth}, () => {
       if (this.isRemoteData()) {
         this.onQueryChange(this.state.query);
       }
@@ -328,8 +333,15 @@ export default class MaterialTable extends React.Component {
       });
     }
     else if (mode === "update") {
-      this.setState({ isLoading: true }, () => {
-        this.props.editable.onRowUpdate(newData, oldData)
+      this.setState({ isLoading: true }, async () => {
+        const db = await rxDb()
+        // rx findOne
+        const rxFindOne = db[rxMtSetting].findOne({name: {$eq: rxMtSettings.updatedRowData}})
+        const rxDoc = await rxFindOne.exec()
+        const changedData = rxDoc ? JSON.parse(rxDoc.value) : {}
+        const realNewData = { ...oldData, ...changedData }
+
+        this.props.editable.onRowUpdate(realNewData, oldData)
           .then(result => {
             this.dataManager.changeRowEditing(oldData);
             this.setState({
@@ -339,6 +351,8 @@ export default class MaterialTable extends React.Component {
               if (this.isRemoteData()) {
                 this.onQueryChange(this.state.query);
               }
+              // rx remove
+              if (rxFindOne) rxFindOne.remove()
             });
           })
           .catch(reason => {

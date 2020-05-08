@@ -1,7 +1,9 @@
-##bunadmin material-table
+## bunadmin material-table
 Add rxdb to fix the fixed column field's value
 
-###How to use
+[Use in bunadmin](https://github.com/bunred/bunadmin)
+
+### How to use
 update package
 ```
 "dependencies": {

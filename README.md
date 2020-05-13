@@ -21,3 +21,24 @@ import { rxMtUpdateField } from "material-table"
       value: value ? string : null
     })
 ```
+
+### Develop
+1.After debugging using `start`, then `build` first, and execute:
+```
+npm pack
+```
+
+2.update `[bunadmin]/package.json`
+```
+    "material-table": "/Volumes/.../bunadmin-material-table/bunadmin-table-1.1.x.tgz",
+```
+
+```
+yarn --force
+```
+
+3.
+Change back after checking
+```
+    "material-table": "npm:bunadmin-table",
+```

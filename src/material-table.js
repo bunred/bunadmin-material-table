@@ -337,13 +337,22 @@ export default class MaterialTable extends React.Component {
 
   onEditingApproved = (mode, newData, oldData) => {
     if (mode === "add") {
-      this.setState({ isLoading: true }, () => {
-        this.props.editable.onRowAdd(newData)
+      this.setState({ isLoading: true }, async () => {
+        const db = await rxDb()
+        // rx findOne
+        const rxFindOne = db[rxMtSetting].findOne({name: {$eq: rxMtSettings.updatedRowData}})
+        const rxDoc = await rxFindOne.exec()
+        const changedData = rxDoc ? JSON.parse(rxDoc.value) : {}
+        const realNewData = { ...oldData, ...changedData }
+
+        this.props.editable.onRowAdd(realNewData)
           .then(result => {
             this.setState({ isLoading: false, showAddRow: false }, () => {
               if (this.isRemoteData()) {
                 this.onQueryChange(this.state.query);
               }
+              // rx remove cached value when updated
+              if (rxFindOne && Object.keys(changedData).length > 0) rxFindOne.remove()
             });
           })
           .catch(reason => {

@@ -370,8 +370,8 @@ export default class MaterialTable extends React.Component {
               if (this.isRemoteData()) {
                 this.onQueryChange(this.state.query);
               }
-              // rx remove
-              if (rxFindOne) rxFindOne.remove()
+              // rx remove cached value when updated
+              if (rxFindOne && Object.keys(changedData).length > 0) rxFindOne.remove()
             });
           })
           .catch(reason => {

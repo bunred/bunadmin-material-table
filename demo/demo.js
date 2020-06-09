@@ -1,4 +1,4 @@
-import { Grid, MuiThemeProvider, Button } from '@material-ui/core';
+import { Grid, MuiThemeProvider } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -105,45 +105,20 @@ class App extends Component {
                   data={this.state.data}
                   title="Demo Title"
                   options={{
+                    fixedColumns: {
+                      left: 2,
+                      right: 0
+                    },
+                    tableLayout: 'fixed',
                     pageSize: 50,
                     pageSizeOptions: [5, 50, 100]
                   }}
                   editable={{
-                    onRowAdd: newData =>
-                      new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                          {
-                            /* const data = this.state.data;
-                            data.push(newData);
-                            this.setState({ data }, () => resolve()); */
-                          }
-                          resolve();
-                        }, 1000);
-                      }),
-                    onRowUpdate: (newData, oldData) =>
-                      new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                          {
-                            /* const data = this.state.data;
-                            const index = data.indexOf(oldData);
-                            data[index] = newData;                
-                            this.setState({ data }, () => resolve()); */
-                          }
-                          resolve();
-                        }, 1000);
-                      }),
-                    onRowDelete: oldData =>
-                      new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                          {
-                            /* let data = this.state.data;
-                            const index = data.indexOf(oldData);
-                            data.splice(index, 1);
-                            this.setState({ data }, () => resolve()); */
-                          }
-                          resolve();
-                        }, 1000);
-                      })
+                    // isEditable: rowData => rowData.not_editable === true, // only name(a) rows would be editable
+                    // isDeletable: rowData => rowData.not_deletable === true, // only name(a) rows would be deletable
+                    onRowAdd: async newData => console.table(newData),
+                    onRowUpdate: async (newData, oldData) => console.table({newData, oldData}),
+                    onRowDelete: oldData => console.table(oldData)
                   }}
                   localization={{
                     body: {
